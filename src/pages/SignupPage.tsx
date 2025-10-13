@@ -116,7 +116,7 @@ const SignupPage = () => {
 													id="fullname"
 													type="text"
 													autoFocus
-													autoComplete="fullname"
+													autoComplete="off"
 													placeholder="Enter your full name"
 													className={classNames('auth-input', {
 														'border-red-200': errors.firstName,
@@ -142,7 +142,7 @@ const SignupPage = () => {
 												<input
 													id="email"
 													type="email"
-													autoComplete="email"
+													autoComplete="off"
 													placeholder="Enter your email"
 													className={classNames('auth-input', {
 														'border-red-200': errors.email,

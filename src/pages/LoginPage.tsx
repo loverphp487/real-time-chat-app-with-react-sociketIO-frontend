@@ -130,7 +130,7 @@ const LoginPage = () => {
 													id="email"
 													type="email"
 													autoFocus
-													autoComplete="email"
+													autoComplete="new-password"
 													placeholder="Enter your email"
 													className={classNames('auth-input', {
 														'border-red-200': errors.email,
@@ -156,7 +156,7 @@ const LoginPage = () => {
 												<input
 													id="password"
 													type="password"
-													autoComplete="new-password"
+													autoComplete="off"
 													placeholder="Enter your password"
 													className={classNames('auth-input', {
 														'border-red-200': errors.password,
