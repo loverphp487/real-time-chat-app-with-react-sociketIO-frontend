@@ -1,0 +1,56 @@
+@import 'tailwindcss';
+@plugin "daisyui" {
+	themes: all;
+}
+
+@layer base {
+	html,
+	body {
+		@apply w-full min-w-screen overflow-x-hidden h-full min-h-screen overflow-y-auto m-0 p-0 box-border;
+	}
+	#root {
+		width: inherit;
+		height: inherit;
+	}
+}
+
+@layer components {
+	.auth-label {
+		@apply block text-xs sm:text-sm font-medium text-slate-100 capitalize;
+	}
+
+	.auth-input {
+		@apply block w-full appearance-none rounded-md border text-slate-200 border-slate-600 px-3 py-1.5 sm:py-2.5 placeholder:text-slate-400! transition-all duration-500 bg-slate-800/80 focus:bg-slate-200 focus:text-slate-600  focus:outline-none focus:ring-cyan-500 focus:ring-2  focus:border-transparent sm:text-sm pl-10  text-base;
+	}
+	.auth-icon {
+		@apply size-5 absolute top-1/2 transform -translate-y-1/2 left-3 z-10 text-slate-400;
+	}
+
+	.auth-btn {
+		@apply w-full text-white flex items-center! bg-cyan-500 hover:bg-cyan-600 transition-all duration-500 active:bg-cyan-700 font-medium rounded-lg text-sm px-5 py-2.5 capitalize justify-center! text-center gap-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-cyan-500;
+	}
+
+	.auth-badge {
+		@apply py-1 px-3 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-medium;
+	}
+
+	.auth-link {
+		@apply py-2 px-3 rounded-lg bg-cyan-500/20 text-cyan-300 text-xs font-medium hover:bg-cyan-500/50 hover:text-slate-200 transition-all duration-500;
+	}
+}
+
+@property --border-angle {
+	inherits: false;
+	initial-value: 0deg;
+	syntax: '<angle>';
+}
+
+@theme {
+	--animate-border: border 4s linear infinite;
+
+	@keyframes border {
+		to {
+			--border-angle: 360deg;
+		}
+	}
+}
