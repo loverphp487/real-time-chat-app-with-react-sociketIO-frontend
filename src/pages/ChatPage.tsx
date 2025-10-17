@@ -11,11 +11,13 @@ import type { RootState } from '@/store';
 import { useWindowWidth } from '@react-hook/window-size';
 import { useQueryClient } from '@tanstack/react-query';
 import { memo, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { io, type Socket } from 'socket.io-client';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 import useNotificationSound from '@/utilis/useNotificationSound';
+import type { UserType } from '@/types';
+import { SetSelectUserChat } from '@/slices/chatSlice';
 
 /**
  * ChatPage is a component that displays a chat interface.
@@ -29,9 +31,26 @@ const ChatPage = () => {
 	const { SelectTab, SelectUserChat, notificationSound } = useSelector(
 		(state: RootState) => state.chats,
 	);
+	const dispatch = useDispatch();
 	const queryClinet = useQueryClient();
 
 	const onlyWidth = useWindowWidth();
+
+	const CustomToastContent = (user: UserType) => (
+		<div className="flex items-center justify-between w-full p-2 text-sm gap-4">
+			<h4>
+				new Message! from <br /> {user.firstName}
+			</h4>
+			<button
+				onClick={() => {
+					dispatch(SetSelectUserChat(user));
+				}}
+				className="btn btn-sm bg-indigo-400 rounded-full text-white"
+			>
+				Open
+			</button>
+		</div>
+	);
 
 	useEffect(() => {
 		const token = Cookies.get('token');
@@ -43,10 +62,10 @@ const ChatPage = () => {
 			},
 		});
 
-		socket.on('newMessage', (data) => {
-			if (SelectUserChat?._id !== data?.senderId) {
+		socket.on('newMessage', (data: { user: UserType }) => {
+			if (SelectUserChat?._id !== data?.user._id) {
 				if (notificationSound) {
-					toast.info('get new message');
+					toast.info(<CustomToastContent {...data?.user} />);
 					useNotificationSound();
 				}
 			}
