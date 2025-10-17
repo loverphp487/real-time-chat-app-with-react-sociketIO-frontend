@@ -28,6 +28,7 @@ const MessageInput = () => {
 	const [message, setMessage] = useState<string>('');
 	const { playKeyboardSound } = useKeyboardSound();
 	const messageInput = useRef<HTMLInputElement>(null);
+	const imageInput = useRef<HTMLInputElement | null>(null);
 
 	const dispatch = useDispatch();
 
@@ -52,6 +53,23 @@ const MessageInput = () => {
 			}),
 	});
 
+	const { isPending: isPendingImage, mutateAsync: mutateAsyncImage } =
+		useMutation({
+			mutationKey: ['add-message'],
+			/**
+			 * Submits a new message to the server.
+			 * It takes a message as a string and sends a POST request to the '/chats/new-message' endpoint with the message and the receiverId.
+			 * The receiverId is retrieved from the selectedUser atom in the chat settings state.
+			 * @param {string} message - The message to be sent.
+			 * @returns {Promise<AxiosResponse>} A promise that resolves with the response object.
+			 */
+			mutationFn: (image: string) =>
+				API.post('/chats/new-message-image', {
+					image,
+					receiverId: SelectUserChat?._id,
+				}),
+		});
+
 	/**
 	 * Submits a new message to the server.
 	 * It takes the current message value from the state and resets the state to an empty string.
@@ -64,6 +82,21 @@ const MessageInput = () => {
 		try {
 			let msg: string | null = message;
 			setMessage('');
+
+			const id = uuidv4();
+
+			dispatch(
+				SetChatContainer([
+					...ChatContainer,
+					{
+						_id: id,
+						senderId: userInfo?._id as string,
+						receiverId: SelectUserChat?._id as string,
+						message: msg,
+						createdAt: new Date(Date.now()),
+					},
+				]),
+			);
 
 			await mutateAsync(msg)
 				.then(() => {
@@ -123,6 +156,71 @@ const MessageInput = () => {
 		}
 	};
 
+	/**
+	 * Handles the file change event for the message input field's file input element.
+	 * It takes the event object as a parameter and checks if the selected file is of an allowed type.
+	 * If the file is of an allowed type, it reads the file using the FileReader and sets the imageUpload state to the file content.
+	 * If there is an error during the file read operation, it logs the error to the console.
+	 * @param {{ target: ChangeEvent<HTMLInputElement>['target'] }} event - The event object containing the target element.
+	 */
+	const handleFileChange = async ({
+		target,
+	}: ChangeEvent<HTMLInputElement>) => {
+		if (target.files && target.files.length > 0) {
+			const file = target.files[0] as File;
+
+			const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+
+			if (!allowedTypes.includes(file.type)) {
+				toast.error(`image type not allowed`);
+				return;
+			}
+
+			const reader = new FileReader();
+
+			reader.onload = async (e: ProgressEvent<FileReader>) => {
+				const fileContent = e.target?.result as string;
+
+				const id = uuidv4();
+
+				dispatch(
+					SetChatContainer([
+						...ChatContainer,
+						{
+							_id: id,
+							senderId: userInfo?._id as string,
+							receiverId: SelectUserChat?._id as string,
+							image: fileContent,
+							createdAt: new Date(Date.now()),
+						},
+					]),
+				);
+
+				try {
+					await mutateAsyncImage(fileContent)
+						.then(() => {})
+						.catch((err) => {
+							toast.error(err.message);
+							dispatch(
+								SetChatContainer([
+									...ChatContainer.filter((item) => item._id !== id),
+								]),
+							);
+						});
+				} catch (error) {}
+			};
+
+			reader.onerror = (e: ProgressEvent<FileReader>) => {
+				console.error('Error reading file:', e.target?.error);
+			};
+
+			// Choose a reading method based on your needs
+			// reader.readAsText(file, 'UTF-8'); // Read as text
+			reader.readAsDataURL(file); // Read as Data URL (e.g., for image previews)
+			// reader.readAsArrayBuffer(file); // Read as ArrayBuffer
+		}
+	};
+
 	useEffect(() => {
 		if (messageInput.current && !isPending) {
 			messageInput.current.focus(); // Refocus the input
@@ -148,13 +246,26 @@ const MessageInput = () => {
 					disabled={isPending}
 					ref={messageInput}
 				/>
-				<button className="cursor-pointer">
+				<button
+					className="cursor-pointer"
+					onClick={() => {
+						imageInput.current?.click();
+					}}
+				>
 					<ImageIcon className="w-5 h-5" />
+					<input
+						type="file"
+						className="hidden -z-20"
+						accept="image/png, image/jpeg, image/jpg"
+						ref={imageInput}
+						onChange={handleFileChange}
+						disabled={isPending || isPendingImage}
+					/>
 				</button>
 				<button
 					type="button"
 					className="cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
-					disabled={message.trim().length < 1 || isPending}
+					disabled={message.trim().length < 1 || isPending || isPendingImage}
 					onClick={onsubmit}
 				>
 					<SendIcon className="w-5 h-5" />

@@ -9,7 +9,7 @@ export type MessageType = {
 	_id: string;
 	senderId: string;
 	receiverId: string;
-	message: string;
+	message?: string;
 	image?: string;
 	createdAt: Date;
 };

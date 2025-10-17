@@ -8,9 +8,8 @@ import {
 	ProfileHeader,
 } from '@/components';
 import type { RootState } from '@/store';
-
+import { useWindowWidth } from '@react-hook/window-size';
 import { useQueryClient } from '@tanstack/react-query';
-
 import { memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { io, type Socket } from 'socket.io-client';
@@ -31,6 +30,8 @@ const ChatPage = () => {
 		(state: RootState) => state.chats,
 	);
 	const queryClinet = useQueryClient();
+
+	const onlyWidth = useWindowWidth();
 
 	useEffect(() => {
 		const token = Cookies.get('token');
@@ -58,19 +59,42 @@ const ChatPage = () => {
 	return (
 		<AnimatedBorder>
 			<div className="w-full flex h-[calc(100vh-5.75rem)]">
-				{/* Left Side */}
-				<div
-					className="h-full hidden md:flex md:flex-col w-full  md:w-80 overflow-hidden border-r border-slate-600/30"
-					data-theme="dark"
-				>
-					<ProfileHeader />
-					<ActiveTabSwitch />
-					{SelectTab === 'chats' ? <ChatsList /> : <ContactList />}
-				</div>
-				{/* Right Side */}
-				<div className="flex-1 bg-slate-900/50 backdrop-blur-sm w-full  flex flex-col">
-					{SelectUserChat ? <ChatContainer /> : <NoConversationPlaceholder />}
-				</div>
+				{onlyWidth > 768 ? (
+					<>
+						{/* Left Side */}
+						<div
+							className="h-full flex flex-col   w-80 overflow-hidden border-r border-slate-600/30"
+							data-theme="dark"
+						>
+							<ProfileHeader />
+							<ActiveTabSwitch />
+							{SelectTab === 'chats' ? <ChatsList /> : <ContactList />}
+						</div>
+						{/* Right Side */}
+						<div className="flex-1 bg-slate-900/50 backdrop-blur-sm w-full  flex flex-col">
+							{SelectUserChat ? (
+								<ChatContainer />
+							) : (
+								<NoConversationPlaceholder />
+							)}
+						</div>
+					</>
+				) : (
+					<>
+						{SelectUserChat ? (
+							<ChatContainer />
+						) : (
+							<div
+								className="h-full flex flex-col w-full  overflow-hidden border-r border-slate-600/30"
+								data-theme="dark"
+							>
+								<ProfileHeader />
+								<ActiveTabSwitch />
+								{SelectTab === 'chats' ? <ChatsList /> : <ContactList />}
+							</div>
+						)}
+					</>
+				)}
 			</div>
 		</AnimatedBorder>
 	);

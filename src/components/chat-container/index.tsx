@@ -125,7 +125,19 @@ const ChatContainer = () => {
 										})}
 									</time>
 								</div>
-								<div className="chat-bubble break-all">{message.message}</div>
+								{message.message ? (
+									<div className="chat-bubble  break-all">
+										{message.message}
+									</div>
+								) : (
+									<img
+										src={message?.image}
+										width={150}
+										height={200}
+										className="border-2  p-2  border-indigo-600 rounded-lg"
+									/>
+								)}
+
 								<div className="chat-footer opacity-50">Delivered</div>
 							</div>
 						) : (
@@ -144,7 +156,19 @@ const ChatContainer = () => {
 										})}
 									</time>
 								</div>
-								<div className="chat-bubble  break-all">{message.message}</div>
+								{message.message ? (
+									<div className="chat-bubble  break-all">
+										{message.message}
+									</div>
+								) : (
+									<img
+										src={message?.image}
+										width={150}
+										height={200}
+										className="border-2  p-2  border-indigo-600 rounded-lg"
+									/>
+								)}
+
 								<div className="chat-footer opacity-50">Delivered</div>
 							</div>
 						);
