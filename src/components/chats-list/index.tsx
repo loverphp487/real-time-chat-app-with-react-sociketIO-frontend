@@ -3,7 +3,7 @@ import type { UserType } from '@/types';
 import API from '@/utilis/axios-api';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import NoChatsFound from '../NoChatsFound';
 import UsersLoadingSkeleton from '../UsersLoadingSkeleton';
@@ -45,10 +45,13 @@ const ChatsList = () => {
 		queryClinet.resetQueries({
 			queryKey: ['conversations', user._id],
 		});
-		queryClinet.resetQueries({
-			queryKey: ['get-all-contact-list'],
-		});
 	};
+
+	useEffect(() => {
+		return () => {
+			setChatList([]);
+		};
+	}, []);
 
 	return (
 		<div
