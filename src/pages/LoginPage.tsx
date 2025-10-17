@@ -99,9 +99,9 @@ const LoginPage = () => {
 	}, []); // The empty dependency array ensures this runs only once on mount
 	return (
 		<AnimatedBorder>
-			<div className="grid grid-cols-1 md:grid-cols-2 w-full h-full">
-				<div className="col-span-1 md:border-r border-slate-600/30 md:p-4">
-					<div className="w-full h-full flex items-center justify-center p-4 pb-6 md:p-8">
+			<div className="grid grid-cols-1 lg:grid-cols-2 w-full h-full">
+				<div className="col-span-1 lg:border-r border-slate-600/30 lg:p-4">
+					<div className="w-full h-full flex items-center justify-center p-4 pb-6 lg:p-8">
 						<div className="w-full mx-w-md">
 							<div className="text-center mb-8 ">
 								<LucideShieldUser className="size-10 sm:size-12 text-slate-100 mx-auto mb-2" />
@@ -113,7 +113,7 @@ const LoginPage = () => {
 								</p>
 							</div>
 							<form
-								className="space-y-4 sm:space-y-6 md:space-y-8"
+								className="space-y-4 sm:space-y-6 lg:space-y-8"
 								onSubmit={handleSubmit(onSubmit)}
 							>
 								<div className="space-y-1.5">
@@ -201,7 +201,7 @@ const LoginPage = () => {
 						</div>
 					</div>
 				</div>
-				<div className="col-span-1 hidden md:flex md:items-center md:justify-center md:flex-col md:p-8 md:bg-gradient-to-bl md:from-slate-800 md:to-slate-900 ">
+				<div className="col-span-1 hidden lg:flex lg:items-center lg:justify-center lg:flex-col lg:p-8 lg:bg-gradient-to-bl lg:from-slate-800 lg:to-slate-900 ">
 					<div>
 						<img src="login.png" className="w-full h-auto object-cover" />
 					</div>
