@@ -6,12 +6,16 @@ export interface ChatState {
 	SelectTab: 'chats' | 'contacts';
 	SelectUserChat?: UserType;
 	ChatContainer: MessageType[];
+	keyboardSound: boolean;
+	notificationSound: boolean;
 }
 
 const initialState: ChatState = {
 	SelectTab: 'chats',
 	SelectUserChat: undefined,
 	ChatContainer: [],
+	keyboardSound: true,
+	notificationSound: true,
 };
 
 export const chatsSlice = createSlice({
@@ -64,6 +68,29 @@ export const chatsSlice = createSlice({
 		) => {
 			state.ChatContainer = action.payload;
 		},
+
+		/**
+		 * Sets the value of the keyboard sound toggle in the chat settings state.
+		 * @param {ChatState} state - The current chat settings state.
+		 * @param {PayloadAction<boolean>} action - The action to set the value of the keyboard sound toggle.
+		 * @returns {void} - Nothing is returned.
+		 */
+		setKeyboadSound: (state: ChatState, action: PayloadAction<boolean>) => {
+			state.keyboardSound = action.payload;
+		},
+		/**
+		 * Sets the value of the notification sound toggle in the chat settings state.
+		 * This is used to toggle the notification sound on or off.
+		 * @param {ChatState} state - The current chat settings state.
+		 * @param {PayloadAction<boolean>} action - The action to set the value of the notification sound toggle.
+		 * @returns {void} - Nothing is returned.
+		 */
+		setNotificationSound: (
+			state: ChatState,
+			action: PayloadAction<boolean>,
+		) => {
+			state.notificationSound = action.payload;
+		},
 	},
 });
 
@@ -72,6 +99,8 @@ export const {
 	SetSelectUserChat,
 	ClearUserSelect,
 	SetChatContainer,
+	setKeyboadSound,
+	setNotificationSound,
 } = chatsSlice.actions;
 
 export default chatsSlice.reducer;

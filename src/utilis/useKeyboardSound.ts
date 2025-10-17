@@ -5,7 +5,7 @@ const keyStrokeSounds = [
 	new Audio('/sounds/keystroke4.mp3'),
 ];
 
-export const useKeyboardSound = () => {
+const useKeyboardSound = () => {
 	const playKeyboardSound = () => {
 		const randomSound =
 			keyStrokeSounds[Math.floor(Math.random() * keyStrokeSounds.length)];

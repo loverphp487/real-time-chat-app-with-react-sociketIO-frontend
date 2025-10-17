@@ -1,6 +1,7 @@
 import { ClearUserSelect } from '@/slices/chatSlice';
 import type { RootState } from '@/store';
 import { X } from 'lucide-react';
+
 import { useDispatch, useSelector } from 'react-redux';
 
 /**
@@ -11,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 const ChatHeader = () => {
 	const dispatch = useDispatch();
 	const { SelectUserChat } = useSelector((state: RootState) => state.chats);
+
 	return (
 		<div
 			className="chat-header w-full px-6  py-4 border-b border-slate-600/30 "

@@ -8,11 +8,15 @@ import {
 	ProfileHeader,
 } from '@/components';
 import type { RootState } from '@/store';
-import socket from '@/utilis/constant';
+
 import { useQueryClient } from '@tanstack/react-query';
 
 import { memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { io, type Socket } from 'socket.io-client';
+import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
+import useNotificationSound from '@/utilis/useNotificationSound';
 
 /**
  * ChatPage is a component that displays a chat interface.
@@ -23,18 +27,33 @@ import { useSelector } from 'react-redux';
  * which is used to determine which tab to display.
  */
 const ChatPage = () => {
-	const { SelectTab, SelectUserChat } = useSelector(
+	const { SelectTab, SelectUserChat, notificationSound } = useSelector(
 		(state: RootState) => state.chats,
 	);
 	const queryClinet = useQueryClient();
 
 	useEffect(() => {
+		const token = Cookies.get('token');
+		const socket: Socket = io(import.meta.env.VITE_BASE_URL, {
+			withCredentials: true,
+			autoConnect: true,
+			auth: {
+				token: token,
+			},
+		});
+
 		socket.on('newMessage', (data) => {
-			queryClinet.refetchQueries({
-				queryKey: ['conversations', data?.senderId],
+			if (SelectUserChat?._id !== data?.senderId) {
+				if (notificationSound) {
+					toast.info('get new message');
+					useNotificationSound();
+				}
+			}
+			queryClinet.invalidateQueries({
+				queryKey: ['conversations', SelectUserChat?._id],
 			});
 		});
-	}, []);
+	}, [SelectUserChat, notificationSound]);
 
 	return (
 		<AnimatedBorder>

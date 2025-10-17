@@ -1,6 +1,7 @@
 import { SetChatContainer } from '@/slices/chatSlice';
 import type { RootState } from '@/store';
 import API from '@/utilis/axios-api';
+import useKeyboardSound from '@/utilis/useKeyboardSound';
 // import useKeyboardSound from '@/utilis/useKeyboardSound';
 import { useMutation } from '@tanstack/react-query';
 import { ImageIcon, SendIcon } from 'lucide-react';
@@ -25,12 +26,12 @@ import { v4 as uuidv4 } from 'uuid';
  */
 const MessageInput = () => {
 	const [message, setMessage] = useState<string>('');
-	// const { playKeyboardSound } = useKeyboardSound();
+	const { playKeyboardSound } = useKeyboardSound();
 	const messageInput = useRef<HTMLInputElement>(null);
 
 	const dispatch = useDispatch();
 
-	const { SelectUserChat, ChatContainer } = useSelector(
+	const { SelectUserChat, ChatContainer, keyboardSound } = useSelector(
 		(state: RootState) => state.chats,
 	);
 	const { userInfo } = useSelector((state: RootState) => state.auth);
@@ -141,7 +142,7 @@ const MessageInput = () => {
 					value={message}
 					onChange={(e: ChangeEvent<HTMLInputElement>) => {
 						setMessage(e.currentTarget.value);
-						// playKeyboardSound();
+						if (keyboardSound) playKeyboardSound();
 					}}
 					onKeyDown={handleKeyDown}
 					disabled={isPending}
