@@ -63,7 +63,7 @@ const ChatPage = () => {
 		});
 
 		socket.on('newMessage', (data: { user: UserType }) => {
-			if (SelectUserChat?._id !== data?.user._id) {
+			if (SelectUserChat?._id !== data?.user._id.toString()) {
 				if (notificationSound) {
 					toast.info(<CustomToastContent {...data?.user} />);
 					useNotificationSound();
