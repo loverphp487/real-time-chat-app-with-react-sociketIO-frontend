@@ -1,7 +1,7 @@
 import { SetChatContainer, SetSelectUserChat } from '@/slices/chatSlice';
 import type { UserType } from '@/types';
 import API from '@/utilis/axios-api';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { memo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,6 +21,7 @@ const ContactList = () => {
 	const dispatch = useDispatch();
 	const [contactList, setContactList] = useState<UserType[]>([]);
 	const { SelectUserChat } = useSelector((state: RootState) => state.chats);
+	const queryClient = useQueryClient();
 
 	const { error, isLoading } = useQuery({
 		queryKey: ['get-all-contact-list'],
@@ -59,6 +60,9 @@ const ContactList = () => {
 						onClick={() => {
 							dispatch(SetSelectUserChat(user));
 							dispatch(SetChatContainer([]));
+							queryClient.refetchQueries({
+								queryKey: ['get-all-chat-list'],
+							});
 						}}
 					>
 						<div className="flex items-center gap-4">

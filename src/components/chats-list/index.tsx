@@ -45,6 +45,9 @@ const ChatsList = () => {
 		queryClinet.resetQueries({
 			queryKey: ['conversations', user._id],
 		});
+		queryClinet.resetQueries({
+			queryKey: ['get-all-contact-list'],
+		});
 	};
 
 	return (
